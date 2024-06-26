@@ -1,8 +1,14 @@
 import evdev
-from evdev import *
+from evdev import InputDevice, categorize, ecodes
 import pyautogui as pp
 
-device = InputDevice('/dev/input/event5')
+device_path = '/dev/input/event5'  
+
+try:
+    device = InputDevice(device_path)
+except FileNotFoundError:
+    print(f"Device not found: {device_path}")
+    exit(1)
 
 SWIPE_THRESHOLD = 50
 current_position = None
@@ -10,9 +16,11 @@ start_position = None
 
 def switch_tabs(direction):
     if direction == 'left':
-        pp.hotkey('alt','shift','tab')
+        pp.hotkey('alt', 'shift', 'tab')
     elif direction == 'right':
-        pp.hotkey('alt','tab')
+        pp.hotkey('alt', 'tab')
+
+print("Listening for swipe gestures...")
 
 for event in device.read_loop():
     if event.type == ecodes.EV_ABS:
@@ -30,4 +38,5 @@ for event in device.read_loop():
                 switch_tabs("left")
                 start_position = None
         elif absevent.event.code == ecodes.ABS_Y:
-            start_position = None
+            start_position = None  # Reset start position on vertical movement
+
