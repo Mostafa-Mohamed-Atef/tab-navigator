@@ -2,8 +2,7 @@ import evdev
 from evdev import *
 import pyautogui as pp
 
-path = '/dev/input/event5'
-device = InputDevice(path)
+device = InputDevice('/dev/input/event5')
 
 SWIPE_THRESHOLD = 50
 current_position = None
@@ -20,7 +19,7 @@ for event in device.read_loop():
         absevent = categorize(event)
         if absevent.event.code == ecodes.ABS_X:
             current_position = absevent.event.value
-
+            
             if start_position is None:
                 start_position = current_position
 
